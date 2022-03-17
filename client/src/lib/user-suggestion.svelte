@@ -18,6 +18,7 @@
 
 <style>
 .user-suggestion-wrapper {
+  background: white;
   max-width: 800px;
   width: 100%;
   height: 200px;

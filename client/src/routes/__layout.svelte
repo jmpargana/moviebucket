@@ -11,5 +11,9 @@
 <style>
 .main-block {
   padding: var(--space-md);
+  background-image: url('/static/assets/svg/personal-bg.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
 }
+
 </style>

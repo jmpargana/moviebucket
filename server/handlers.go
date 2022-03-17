@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"net/url"
+	"strings"
 )
 
 func (s *Server) handleGreet() http.HandlerFunc {
@@ -37,5 +39,31 @@ func (s *Server) handleMoviePost() http.HandlerFunc {
 		fmt.Println(out, err)
 
 		s.respond(w, r, nil, 200)
+	}
+}
+
+func (s *Server) handleLogin() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		URL, err := url.Parse(oauthConfig.Endpoint.AuthURL)
+		if err != nil {
+			fmt.Println(err)
+		}
+		parameters := url.Values{}
+		parameters.Add("client_id", oauthConfig.ClientID)
+		parameters.Add("scope", strings.Join(oauthConfig.Scopes, " "))
+		parameters.Add("redirect_uri", oauthConfig.RedirectURL)
+		parameters.Add("response_type", "code")
+		parameters.Add("state", "")
+		URL.RawQuery = parameters.Encode()
+		uri := URL.String()
+		http.Redirect(w, r, uri, http.StatusTemporaryRedirect)
+	}
+}
+
+func (s *Server) handleGoogleCallback() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		state := r.FormValue("state")
+		code := r.FormValue("code")
+		fmt.Println(state, code)
 	}
 }
